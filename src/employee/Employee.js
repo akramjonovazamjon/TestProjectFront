@@ -3,10 +3,14 @@ import {Button} from "antd";
 import EmployeeAdd from "./EmployeeAdd";
 import EmployeeList from "./EmployeeList";
 import axios from "axios";
+import EmployeeMonthlyWorkingStatistics2 from "./EmployeeMonthlyWorkingStatistics2";
+import Login from "../Login";
 
 function Employee({firstEmployee, firstGetEmployeeList}) {
     const [visible, setVisible] = useState(false);
     const [positionList, setPositionList] = useState([]);
+    const [isEmployee, setIsEmployee] = useState(false);
+    const [logOutStatus, setLogOutStatus] = useState(false);
 
     const getPositions = () => {
         let config = {
@@ -33,16 +37,33 @@ function Employee({firstEmployee, firstGetEmployeeList}) {
     }
 
 
+    function setIsEmployeeTrue() {
+        setIsEmployee(true)
+    }
+
+    function logOut() {
+        setLogOutStatus(true)
+    }
+
+    if (logOutStatus) {
+        return <Login/>
+    }
 
     return (
         <div>
-            <div>
-                <Button type="primary" onClick={showModal}>Add Employee</Button>
+            {
+                isEmployee ? (<EmployeeMonthlyWorkingStatistics2/>) : (<div>
+                    <Button type="primary" onClick={showModal}>Add Employee</Button>
+                    <Button type="primary" onClick={logOut}>Log Out</Button>
 
-                <EmployeeAdd positionList={positionList} visible1={visible} onOk={handleOk}
-                             onCancel={handleCancel}/>
-                <EmployeeList positionList={positionList} employeeList1={firstEmployee} getEmployeeList={firstGetEmployeeList}/>
-            </div>
+                    <EmployeeAdd positionList={positionList} visible1={visible} onOk={handleOk}
+                                 onCancel={handleCancel}/>
+                    <EmployeeList setIsEmployee={setIsEmployeeTrue} positionList={positionList}
+                                  employeeList1={firstEmployee}
+                                  getEmployeeList={firstGetEmployeeList}/>
+                </div>)
+            }
+
         </div>
     );
 }

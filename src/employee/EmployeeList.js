@@ -6,7 +6,7 @@ import EmployeeMonthlyStatistics from "./EmployeeMonthlyStatistics";
 import EmployeeMonthlySalary from "./EmployeeMonthlySalary";
 import EmployeeUpdate from "./EmployeeUpdate";
 
-function EmployeeList({employeeList1, getEmployeeList, positionList}) {
+function EmployeeList({employeeList1, getEmployeeList, positionList, setIsEmployee}) {
 
     const [visible, setVisible] = useState(false);
     const [updateVisible, setUpdateVisible] = useState(false);
@@ -34,8 +34,8 @@ function EmployeeList({employeeList1, getEmployeeList, positionList}) {
     }
 
     const handleOkUpdate = () => {
-        getEmployeeList();
         setUpdateVisible(false)
+        getEmployeeList();
     }
 
     const handleCancel = () => {
@@ -109,9 +109,11 @@ function EmployeeList({employeeList1, getEmployeeList, positionList}) {
             </div>
             <div>{<EmployeeAddDate visible1={visible} onOk={handleOk} onCancel={handleCancel}
                                    employeeId={employeeId}/>}</div>
-            <div>{<EmployeeUpdate positionList={positionList} visible1={updateVisible} onOk={handleOkUpdate} onCancel={handleCancel}
+            <div>{<EmployeeUpdate positionList={positionList} visible1={updateVisible} onOk={handleOkUpdate}
+                                  onCancel={handleCancel}
                                   employeeId={employeeId}/>}</div>
-            <div>{<EmployeeMonthlyStatistics visible1={statisticsVisible} onOk={handleOk} onCancel={handleCancel}
+            <div>{<EmployeeMonthlyStatistics visible1={statisticsVisible} setIsEmployee={setIsEmployee} onOk={handleOk}
+                                             onCancel={handleCancel}
                                              employeeId={employeeId}/>}</div>
             <div>{<EmployeeMonthlySalary visible1={salaryVisible} onOk={handleOk} onCancel={handleCancel}
                                          employeeId={employeeId}/>}</div>

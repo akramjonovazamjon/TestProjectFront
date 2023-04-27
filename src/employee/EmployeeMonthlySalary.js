@@ -56,9 +56,16 @@ function EmployeeMonthlySalary({visible1, onOk, onCancel, employeeId}) {
 
             </Modal>
 
-            <Modal title="Basic Modal" open={visible} onOk={catchOk} onCancel={catchOnCancel}>
+            <Modal title="Information about employee salary" open={visible} onOk={catchOk} onCancel={catchOnCancel}>
 
-                <pre>{JSON.stringify(object, null, 2)}</pre>
+                {/*<pre>{JSON.stringify(object, null, 2)}</pre>*/}
+                <h5>Employee name: <i>{object.fullName}</i></h5>
+                <h5>Employee phone: <i>{object.phoneNumber}</i></h5>
+                <h5>Employee position: <i>{object.position}</i></h5>
+                <h5>Employee department: <i>{object.organization}</i></h5>
+                <h5>Working month: <i>{object.month}</i></h5>
+                <h5>Working hours: <i>{object.monthlyWorkingHour}</i></h5>
+                <h5>Employee salary: <i>{object.salary} UZS</i></h5>
 
             </Modal>
         </>

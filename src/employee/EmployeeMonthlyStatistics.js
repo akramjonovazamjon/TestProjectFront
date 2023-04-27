@@ -1,28 +1,16 @@
 import React, {useState} from 'react';
 import {Modal} from "antd";
-import axios from "axios";
 
-function EmployeeMonthlyStatistics({visible1, onOk, onCancel, employeeId}) {
+function EmployeeMonthlyStatistics({visible1, onOk, onCancel, employeeId, setIsEmployee}) {
 
 
-    const [visible, setVisible] = useState(false);
     const [date, setDate] = useState({});
-    const [object, setObject] = useState({});
     const onOkItSelf = () => {
-        let config = {
-            params: {
-                'year': date.year,
-                'month': date.month
-            }
-        }
-        axios.get("http://localhost:8008/employees/" + employeeId + "/items", config).then((res) => {
-            setObject(res.data.result)
-            onOk();
-            setVisible(true);
-        }).catch((error) => {
-            alert("Error")
-        })
-
+        sessionStorage.setItem("year", date.year)
+        sessionStorage.setItem("month", date.month)
+        sessionStorage.setItem("employeeId", employeeId)
+        sessionStorage.setItem("isOK", "true")
+        setIsEmployee();
     }
 
     const handleInputChange = (e) => {
@@ -32,13 +20,13 @@ function EmployeeMonthlyStatistics({visible1, onOk, onCancel, employeeId}) {
         })
     }
 
-    function catchOk() {
-        setVisible(false)
-    }
-
-    function catchOnCancel() {
-        setVisible(false);
-    }
+    // function catchOk() {
+    //     setVisible(false)
+    // }
+    //
+    // function catchOnCancel() {
+    //     setVisible(false);
+    // }
 
     return (
         <>
@@ -56,11 +44,11 @@ function EmployeeMonthlyStatistics({visible1, onOk, onCancel, employeeId}) {
 
             </Modal>
 
-            <Modal title="Basic Modal" open={visible} onOk={catchOk} onCancel={catchOnCancel}>
+            {/*<Modal title="Basic Modal" open={visible} onOk={catchOk} onCancel={catchOnCancel}>*/}
 
-                <pre>{JSON.stringify(object, null, 2)}</pre>
+            {/*    <pre>{JSON.stringify(object, null, 2)}</pre>*/}
 
-            </Modal>
+            {/*</Modal>*/}
         </>
     );
 }
