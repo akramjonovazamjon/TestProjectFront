@@ -1,17 +1,20 @@
 import React, {useState} from 'react';
 import axios from "axios";
 import {Modal} from "antd";
-import isNumeric from "antd/es/_util/isNumeric";
 
-function EmployeeAdd({visible1, onOk, onCancel, positionList}) {
+function EmployeeUpdate({visible1, onOk, onCancel, positionList, employeeId}) {
 
     const [employee, setEmployee] = useState({});
     const onOkItSelf = () => {
-        console.log(employee)
-        axios.post("http://localhost:8008/employees", employee).then((res) => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        axios.put("http://localhost:8008/employees/" + employeeId, employee, config).then((res) => {
             onOk();
         }).catch((error) => {
-            alert("This Employee already exist!")
+            alert("Some error")
         })
 
     }
@@ -41,7 +44,7 @@ function EmployeeAdd({visible1, onOk, onCancel, positionList}) {
                     <label htmlFor="">Positions</label>
                     <select name="positionId" className="form-control" onChange={handleInputChange}>
                         {positionList.map(item => (
-                            <option name="positionId" value={item.id}>{item.name}</option>
+                            <option name={"positionId"} value={item.id}>{item.name}</option>
                         ))}
                     </select>
                 </div>
@@ -50,4 +53,4 @@ function EmployeeAdd({visible1, onOk, onCancel, positionList}) {
     );
 }
 
-export default EmployeeAdd;
+export default EmployeeUpdate;

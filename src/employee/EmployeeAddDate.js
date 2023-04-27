@@ -6,7 +6,12 @@ function EmployeeAddDate({visible1, onOk, onCancel, employeeId}) {
 
     const [employeeDate, setEmployeeDate] = useState({});
     const onOkItSelf = () => {
-        axios.post("http://localhost:8008/employees/" + employeeId + "/items", employeeDate).then((res) => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        axios.post("http://localhost:8008/employees/" + employeeId + "/items", employeeDate, config).then((res) => {
             onOk();
             alert("Success")
         }).catch((error) => {

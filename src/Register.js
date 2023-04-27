@@ -1,39 +1,51 @@
 import {Button, Form, Input} from 'antd';
 import axios from "axios";
-import Organization from "./organization/Organization";
 import {useState} from "react";
+import Employee from "./employee/Employee";
 
 
 const Register = ({setVisible}) => {
 
 
     const [isLoading, setLoading] = useState(false);
-    const [organizationList, setOrganizationList] = useState([]);
+    const [employeeList, setEmployeeList] = useState([]);
+
+    function getEmployeeList() {
+        console.log(sessionStorage.getItem("BearerToken"))
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken"),
+            }
+        }
+        axios.get("http://localhost:8008/employees", config).then((response) => {
+            setEmployeeList(response.data.result)
+        }).catch(res => {
+
+        })
+    }
+
+
     const onFinish = (values) => {
         console.log('Success:', values);
         axios.post("http://localhost:8008/auth/sign-up", values).then((res) => {
-            if (res.status === 200) {
-                getOrganizationList();
-                setLoading(true);
-            }
+            sessionStorage.setItem("BearerToken", res.data.result.token)
+            getEmployeeList();
+            setLoading(true);
+
         }).catch(res => {
             alert("Username is not valid!")
         })
 
     };
 
-    const getOrganizationList = () => {
-        axios.get("http://localhost:8008/organizations").then((response) => {
-            setOrganizationList(response.data.result)
-        })
-    }
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
     if (isLoading) {
-        return (<div>{<Organization firstOrgList={organizationList} firstGetOrgList={getOrganizationList}/>}</div>);
+        return (<div>{<Employee firstEmployee={employeeList}
+                                firstGetEmployeeList={getEmployeeList}/>}</div>);
     }
 
     return (
@@ -64,7 +76,7 @@ const Register = ({setVisible}) => {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Please input your full name!',
                         },
                     ]}
                 >

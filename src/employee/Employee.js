@@ -2,21 +2,25 @@ import React, {useState} from "react";
 import {Button} from "antd";
 import EmployeeAdd from "./EmployeeAdd";
 import EmployeeList from "./EmployeeList";
-import Organization from "../organization/Organization";
 import axios from "axios";
 
-function Employee({firstEmployee, firstGetEmployeeList, orgId}) {
+function Employee({firstEmployee, firstGetEmployeeList}) {
     const [visible, setVisible] = useState(false);
-    const [backStatus, setBackStaus] = useState(false);
-    const [organizationList, setOrganizationList] = useState([]);
+    const [positionList, setPositionList] = useState([]);
 
-    const getOrganizationList = () => {
-        axios.get("http://localhost:8008/organizations").then((response) => {
-            setOrganizationList(response.data.result)
+    const getPositions = () => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        axios.get("http://localhost:8008/positions", config).then((response) => {
+            setPositionList(response.data.result)
         })
     }
 
     const showModal = () => {
+        getPositions()
         setVisible(true);
     };
     const handleOk = () => {
@@ -28,22 +32,16 @@ function Employee({firstEmployee, firstGetEmployeeList, orgId}) {
         setVisible(false)
     }
 
-    function back() {
-        getOrganizationList();
-        setBackStaus(true);
-    }
 
-    if (backStatus) {
-        return (<div>{<Organization firstOrgList={organizationList} firstGetOrgList={getOrganizationList}/>}</div>);
-    }
 
     return (
         <div>
             <div>
                 <Button type="primary" onClick={showModal}>Add Employee</Button>
-                <Button type="primary" onClick={back}>Back To Organizations</Button>
-                <EmployeeAdd organizationId={orgId} visible1={visible} onOk={handleOk} onCancel={handleCancel}/>
-                <EmployeeList employeeList1={firstEmployee} getEmployeeList={firstGetEmployeeList}/>
+
+                <EmployeeAdd positionList={positionList} visible1={visible} onOk={handleOk}
+                             onCancel={handleCancel}/>
+                <EmployeeList positionList={positionList} employeeList1={firstEmployee} getEmployeeList={firstGetEmployeeList}/>
             </div>
         </div>
     );

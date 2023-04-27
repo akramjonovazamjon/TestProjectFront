@@ -9,7 +9,13 @@ function EmployeeMonthlyStatistics({visible1, onOk, onCancel, employeeId}) {
     const [date, setDate] = useState({});
     const [object, setObject] = useState({});
     const onOkItSelf = () => {
-        axios.put("http://localhost:8008/employees/" + employeeId + "/items", date).then((res) => {
+        let config = {
+            params: {
+                'year': date.year,
+                'month': date.month
+            }
+        }
+        axios.get("http://localhost:8008/employees/" + employeeId + "/items", config).then((res) => {
             setObject(res.data.result)
             onOk();
             setVisible(true);

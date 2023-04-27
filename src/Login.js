@@ -2,35 +2,46 @@ import {Button, Form, Input} from 'antd';
 import axios from "axios";
 import React, {useState} from "react";
 import Register from "./Register";
-import Organization from "./organization/Organization";
+import Employee from "./employee/Employee";
 
 const Login = () => {
 
     const [visible, setVisible] = useState(false);
     const [isLoading1, setLoading1] = useState(false);
-    const [organizationList, setOrganizationList] = useState([]);
+    const [employeeList, setEmployeeList] = useState([]);
 
 
-    const onFinish = (values) => {
+    function getEmployeeList() {
+        console.log(sessionStorage.getItem("BearerToken"))
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken"),
+            }
+        }
+        axios.get("http://localhost:8008/employees", config).then((response) => {
+            setEmployeeList(response.data.result)
+        }).catch(res => {
+
+        })
+    }
+
+
+    function onFinish(values) {
         console.log('Success:', values);
         axios.post("http://localhost:8008/auth/sign-in", values).then((res) => {
-            getOrganizationList();
+            sessionStorage.setItem("BearerToken", res.data.result.token)
+            console.log(sessionStorage.getItem("BearerToken"))
+            getEmployeeList();
             setLoading1(true);
         }).catch(res => {
             alert("Username or Password wrong. Try again!")
         })
-    };
-
-
-    const getOrganizationList = () => {
-        axios.get("http://localhost:8008/organizations").then((response) => {
-            setOrganizationList(response.data.result)
-        }).catch(res => {
-        })
     }
 
+
     if (isLoading1) {
-        return (<div>{<Organization firstOrgList={organizationList} firstGetOrgList={getOrganizationList}/>}</div>);
+        return (<div>{<Employee firstEmployee={employeeList}
+                                    firstGetEmployeeList={getEmployeeList}/>}</div>);
     }
 
     const onFinishFailed = (errorInfo) => {

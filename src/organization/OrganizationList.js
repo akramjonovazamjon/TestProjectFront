@@ -10,13 +10,23 @@ function OrganizationList({organizationList1, getOrganizationList, buttomShowMod
     const [id, setId] = useState(-1);
 
     const getEmployeeList = (id) => {
-        axios.get("http://localhost:8008/organizations/" + id + "/employees").then((response) => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        axios.get("http://localhost:8008/organizations/" + id + "/employees", config).then((response) => {
             setEmployees(response.data.result)
         })
     }
 
     function deleteOrg(id) {
-        return axios.delete("http://localhost:8008/organizations/" + id).then(res => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        return axios.delete("http://localhost:8008/organizations/" + id, config).then(res => {
             getOrganizationList();
         });
     }
@@ -42,10 +52,11 @@ function OrganizationList({organizationList1, getOrganizationList, buttomShowMod
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Add Organization</th>
                             <th scope="col">Delete</th>
                             <th scope="col">Employees</th>
                             <th scope="col">{<Button type="primary" onClick={backLogin}>Log Out</Button>}</th>
+                            <th scope="col">{<Button type="primary" onClick={buttomShowModal}>Add
+                                Organization</Button>}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -53,7 +64,6 @@ function OrganizationList({organizationList1, getOrganizationList, buttomShowMod
                             <tr>
                                 <td>{o.id}</td>
                                 <td>{o.name}</td>
-                                <td>{<Button type="primary" onClick={buttomShowModal}>Add Organization</Button>}</td>
                                 <td>{<Button type="primary" danger onClick={() => deleteOrg(o.id)}>Delete</Button>}</td>
                                 <td>{<Button type="primary" onClick={() => openEmployees(o.id)}>Employees</Button>}</td>
                             </tr>

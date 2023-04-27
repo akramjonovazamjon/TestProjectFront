@@ -6,7 +6,12 @@ function OrganizationAdd({visible1, onOk, onCancel}) {
 
     const [organization, setOrganization] = useState({});
     const onOkItSelf = () => {
-        axios.post("http://localhost:8008/organizations", organization).then((res) => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        axios.post("http://localhost:8008/organizations", organization, config).then((res) => {
             onOk();
         }).catch((error) => {
             alert("This organization already exist!")

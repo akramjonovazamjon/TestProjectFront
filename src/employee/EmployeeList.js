@@ -4,28 +4,42 @@ import {Button} from "antd";
 import EmployeeAddDate from "./EmployeeAddDate";
 import EmployeeMonthlyStatistics from "./EmployeeMonthlyStatistics";
 import EmployeeMonthlySalary from "./EmployeeMonthlySalary";
+import EmployeeUpdate from "./EmployeeUpdate";
 
-function EmployeeList({employeeList1, getEmployeeList}) {
+function EmployeeList({employeeList1, getEmployeeList, positionList}) {
 
     const [visible, setVisible] = useState(false);
+    const [updateVisible, setUpdateVisible] = useState(false);
     const [statisticsVisible, setStatisticsVisible] = useState(false);
     const [salaryVisible, setSalaryVisible] = useState(false);
     const [employeeId, setEmployeeId] = useState(-1);
 
 
     function deleteEmp(id) {
-        return axios.delete("http://localhost:8008/organizations/" + id + "/employees/" + id).then(res => {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("BearerToken")
+            }
+        }
+        return axios.delete("http://localhost:8008/employees/" + id, config).then(res => {
             getEmployeeList();
         });
     }
 
     const handleOk = () => {
+        setUpdateVisible(false)
         setVisible(false);
         setStatisticsVisible(false)
         setSalaryVisible(false)
     }
 
+    const handleOkUpdate = () => {
+        getEmployeeList();
+        setUpdateVisible(false)
+    }
+
     const handleCancel = () => {
+        setUpdateVisible(false)
         setVisible(false)
         setStatisticsVisible(false)
         setSalaryVisible(false)
@@ -34,6 +48,11 @@ function EmployeeList({employeeList1, getEmployeeList}) {
     function addDate(id) {
         setEmployeeId(id);
         setVisible(true);
+    }
+
+    function update(id) {
+        setEmployeeId(id)
+        setUpdateVisible(true)
     }
 
     function addStatistics(id) {
@@ -57,8 +76,10 @@ function EmployeeList({employeeList1, getEmployeeList}) {
                             <th scope="col">Full Name</th>
                             <th scope="col">Phone Number</th>
                             <th scope="col">Salary</th>
+                            <th scope="col">Position</th>
                             <th scope="col">Organization</th>
                             <th scope="col">Delete</th>
+                            <th scope="col">Update</th>
                             <th scope="col">Add Working Date</th>
                             <th scope="col">Monthly Statistics</th>
                             <th scope="col">Monthly Salary</th>
@@ -71,8 +92,10 @@ function EmployeeList({employeeList1, getEmployeeList}) {
                                 <td>{o.fullName}</td>
                                 <td>{o.phoneNumber}</td>
                                 <td>{o.salary}</td>
+                                <td>{o.position}</td>
                                 <td>{o.organization}</td>
                                 <td>{<Button type="primary" danger onClick={() => deleteEmp(o.id)}>Delete</Button>}</td>
+                                <td>{<Button type="primary" onClick={() => update(o.id)}>Update</Button>}</td>
                                 <td>{<Button type="primary" onClick={() => addDate(o.id)}>Add Date</Button>}</td>
                                 <td>{<Button type="primary" onClick={() => addStatistics(o.id)}>Monthly
                                     Statistics</Button>}</td>
@@ -86,6 +109,8 @@ function EmployeeList({employeeList1, getEmployeeList}) {
             </div>
             <div>{<EmployeeAddDate visible1={visible} onOk={handleOk} onCancel={handleCancel}
                                    employeeId={employeeId}/>}</div>
+            <div>{<EmployeeUpdate positionList={positionList} visible1={updateVisible} onOk={handleOkUpdate} onCancel={handleCancel}
+                                  employeeId={employeeId}/>}</div>
             <div>{<EmployeeMonthlyStatistics visible1={statisticsVisible} onOk={handleOk} onCancel={handleCancel}
                                              employeeId={employeeId}/>}</div>
             <div>{<EmployeeMonthlySalary visible1={salaryVisible} onOk={handleOk} onCancel={handleCancel}
